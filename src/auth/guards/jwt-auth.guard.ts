@@ -5,11 +5,13 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Role } from '@prisma/client';
 import { Request } from 'express';
 
 interface JwtPayload {
   sub: number;
   email: string;
+  role: Role;
   iat?: number;
   exp?: number;
 }

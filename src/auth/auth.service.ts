@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Prisma, User } from '@prisma/client';
+import { Prisma, Role, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
@@ -81,10 +81,11 @@ export class AuthService {
     };
   }
 
-  generateToken(user: { id: number; email: string }): string {
+  generateToken(user: { id: number; email: string; role: Role }): string {
     return this.jwtService.sign({
       sub: user.id,
       email: user.email,
+      role: user.role,
     });
   }
 
@@ -93,6 +94,7 @@ export class AuthService {
       id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
     };
   }
 }

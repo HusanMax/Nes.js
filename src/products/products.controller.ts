@@ -9,14 +9,16 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { Product } from '@prisma/client';
+import { Product, Role } from '@prisma/client';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
 
 @Controller('products')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
@@ -31,11 +33,13 @@ export class ProductsController {
   }
 
   @Post()
+  @Roles(Role.ADMIN, Role.MODERATOR)
   create(@Body() dto: CreateProductDto): Promise<Product> {
     return this.productsService.create(dto);
   }
 
   @Patch(':id')
+  @Roles(Role.ADMIN, Role.MODERATOR)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateProductDto,
@@ -44,6 +48,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
+  @Roles(Role.ADMIN)
   remove(@Param('id', ParseIntPipe) id: number): Promise<Product> {
     return this.productsService.remove(id);
   }
