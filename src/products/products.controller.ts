@@ -1,28 +1,22 @@
 import {
   Body,
   Controller,
-<<<<<<< HEAD
   Delete,
   Get,
   Param,
   ParseIntPipe,
   Patch,
-=======
-  Get,
-  Param,
-  ParseIntPipe,
->>>>>>> d726fabd2dd1ffcb9c80156845a98d62fbed2548
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { Product } from '@prisma/client';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateProductDto } from './dto/create-product.dto';
-<<<<<<< HEAD
 import { UpdateProductDto } from './dto/update-product.dto';
-=======
->>>>>>> d726fabd2dd1ffcb9c80156845a98d62fbed2548
 import { ProductsService } from './products.service';
 
 @Controller('products')
+@UseGuards(JwtAuthGuard)
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
@@ -40,7 +34,6 @@ export class ProductsController {
   create(@Body() dto: CreateProductDto): Promise<Product> {
     return this.productsService.create(dto);
   }
-<<<<<<< HEAD
 
   @Patch(':id')
   update(
@@ -54,6 +47,4 @@ export class ProductsController {
   remove(@Param('id', ParseIntPipe) id: number): Promise<Product> {
     return this.productsService.remove(id);
   }
-=======
->>>>>>> d726fabd2dd1ffcb9c80156845a98d62fbed2548
 }

@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { Prisma, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
@@ -7,9 +8,18 @@ import { RegisterDto } from './dto/register.dto';
 
 type PublicUser = Omit<User, 'password'>;
 
+type AuthResponse = {
+  message: string;
+  access_token: string;
+  user: PublicUser;
+};
+
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async register(
     dto: RegisterDto,
@@ -49,9 +59,7 @@ export class AuthService {
     }
   }
 
-  async login(
-    dto: LoginDto,
-  ): Promise<{ message: string; user: PublicUser }> {
+  async login(dto: LoginDto): Promise<AuthResponse> {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
     });
@@ -68,8 +76,16 @@ export class AuthService {
 
     return {
       message: 'Login successful',
+      access_token: this.generateToken(user),
       user: this.toPublicUser(user),
     };
+  }
+
+  generateToken(user: { id: number; email: string }): string {
+    return this.jwtService.sign({
+      sub: user.id,
+      email: user.email,
+    });
   }
 
   private toPublicUser(user: User): PublicUser {
