@@ -1,16 +1,25 @@
 import {
   Body,
   Controller,
+<<<<<<< HEAD
   Delete,
   Get,
   Param,
   ParseIntPipe,
   Patch,
+=======
+  Get,
+  Param,
+  ParseIntPipe,
+>>>>>>> d726fabd2dd1ffcb9c80156845a98d62fbed2548
   Post,
 } from '@nestjs/common';
 import { Product } from '@prisma/client';
 import { CreateProductDto } from './dto/create-product.dto';
+<<<<<<< HEAD
 import { UpdateProductDto } from './dto/update-product.dto';
+=======
+>>>>>>> d726fabd2dd1ffcb9c80156845a98d62fbed2548
 import { ProductsService } from './products.service';
 
 @Controller('products')
@@ -31,6 +40,7 @@ export class ProductsController {
   create(@Body() dto: CreateProductDto): Promise<Product> {
     return this.productsService.create(dto);
   }
+<<<<<<< HEAD
 
   @Patch(':id')
   update(
@@ -44,4 +54,6 @@ export class ProductsController {
   remove(@Param('id', ParseIntPipe) id: number): Promise<Product> {
     return this.productsService.remove(id);
   }
+=======
+>>>>>>> d726fabd2dd1ffcb9c80156845a98d62fbed2548
 }
